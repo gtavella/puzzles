@@ -75,4 +75,4 @@ function simplify ( poly ) {
 var result = simplify("3x-zx-3a+2xy-x-a+5ab+3a-c-2a+2x+abc-2ac+3a+2ac+x-abc-2xy+xz")
 
 console.log(result)
-// -abc+3a+2ac
+// 5x+5ab-c
