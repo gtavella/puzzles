@@ -1,13 +1,9 @@
-function simplify ( poly ) {
+function simplify( poly ) {
     var monoms = {}, 
-        finalStr = '',
-        rxMonom = /\s*([+-]?)\s*(\d*)([a-z]+)/g,
-        resMonom;
+        arr_monoms = [],
+        finalStr = '';
     
-    while ( resMonom = rxMonom.exec(poly) ) 
-     {
-        let [, sign, coef, monom] = resMonom;
-        
+    poly.replace(/([+-]?)(\d*)([a-z]+)/g, (_, sign, coef, monom) => {
         sign = sign || '+'
         
         if (coef == '0') coef = 0;
@@ -28,10 +24,10 @@ function simplify ( poly ) {
                 ? coef 
                 : -coef;
           }  
-     }
-  
+    })
     
-    Object.keys( monoms ).sort((a, b) => {
+    
+    arr_monoms = Object.keys( monoms ).sort((a, b) => {
         var a_len = a.length,
             b_len = b.length;
         
@@ -44,26 +40,26 @@ function simplify ( poly ) {
                if (a[l] > b[l]) return a[l] > b[l]
                l++
             }
-           
          }
-      
-    }).forEach(monom => {
-         var coef = monoms[monom], sign;
+    })
     
-         if (coef == 0) return;
-         else if (coef > 0)
+    
+    arr_monoms.forEach(monom => {
+        var coef = monoms[monom], sign;
+        
+        if (coef == 0) return;
+        else if (coef > 0)
             sign = '+'
-         else 
-          { 
-            coef = - (coef)
-            sign = '-'
-          }
-    
+        else 
+         { 
+           coef = -(coef)
+           sign = '-'
+         }
+          
         if (coef == 1) 
            coef = ''
     
          finalStr += `${sign}${coef}${monom}`
-         
     })
     
     
