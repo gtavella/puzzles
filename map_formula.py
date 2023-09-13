@@ -1,12 +1,4 @@
-# capture the innermost parenthesis (..) [..] {..}
-# {{{{A}}{A}}{A}}{(A)}{{{}{A}}[A]}{{{{A}}}}{}{{{A}}{A}{{{A}}}}
-# USAGE
-# only use one parenthesis
-# ({Ca}3)3 -> NO
-# (Ga{Ca}3)3 -> YES
-
 import re
-
 
 pattern_inner_parenth = re.compile(r"(\([^()[\]{}]+\))(\d*)|(\[[^[\](){}]+\])(\d*)|({[^{}()[\]]+})(\d*)")
 pattern_formula = re.compile(r"([A-Z][a-z]*)(\d*)")
