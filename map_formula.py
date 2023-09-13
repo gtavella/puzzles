@@ -6,9 +6,9 @@ pattern_formula = re.compile(r"([A-Z][a-z]*)(\d*)")
 
 
 def simplify_formula(target):     
-
     str_formula = ''
     match_inner_parenth = re.search(pattern_inner_parenth, target)
+
     if match_inner_parenth is None:
          return target
 
@@ -27,7 +27,9 @@ def simplify_formula(target):
         str_formula += formula_new_str
 
     target = target[:start] + str_formula + target[end:]
+
     return simplify_formula(target)
+
 
 
 
@@ -45,6 +47,7 @@ def map_formula(target):
             elements_map[element] += coeff_element
         else:
             elements_map[element] = coeff_element
+            
     return elements_map
 
 
@@ -54,13 +57,11 @@ target = '([(CH3)2]2)2[{[NaCa]2}3[BVi3Ma4]2{(K3)3}2]2'
 
 target_simplified = simplify_formula(target)
 print(target_simplified)
-# with simplify_formula, the result is:
 # C8H24Na12Ca12B4Vi12Ma16K36
 
 
 elements_map = map_formula(target)
 print(elements_map)
-# with map_formula, the result is:
 # {'C': 8, 'H': 24, 'Na': 12, 'Ca': 12, 'B': 4, 'Vi': 12, 'Ma': 16, 'K': 36}
 
 
