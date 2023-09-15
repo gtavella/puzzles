@@ -8,10 +8,27 @@ pattern_not_parenth = re.compile(r'([^()[\]{}]+)')
 
 
 
+# test, expected
+tests = [
+    ['(AA{)d[A]())))[])aa(({)2)2]]A){[}]]]BA[A](A)}([)[]]', False],
+    ['([(CH3)2]2)2[{[NaCa]2}3[BVi3MaC4]2{(K3)3}2]2', True],
+    ['([(CH3)2]2)2[{[NaCa]2}3[BVi3MaC4]2{(K3))3}2]2', False],
+    ['([(CH3)2]2)2([{[NaCa]2})3[BVi3MaC4]2{(K3))3}2]2', False],
+    ['([(CH3)2]]2)2[[{[NaCa]2})3[BVi3MaC4]2{(K3))3}2]2', False],
+    ['((((((([A]([B](((({A2}(((((C))))[D]))))[E]))[F])))(G)))))', True],
+    ['(((()({)}))()[(]))(())()', False],
+    ['[(()([))(()[])][[{][[](]]', False]
+]
+
+
+
+
+
 # check for valid parenthesis
 # if invalid parenthesis match, run callback function
 def validate_parenth(target):
     stack_open = []
+    nomatch = []
     pairs = { '(': ')', '[': ']', '{': '}' }
     opening = pairs.keys()
     closing = pairs.values()
@@ -38,44 +55,26 @@ def validate_parenth(target):
                 # close parenthesis not corresponding
                 else:
                     suggestion = suggestion[:i] + '_' + suggestion[i+1:]
-                    # print('closing parenthesis but not matching', i)
+                    nomatch.append([c,i])
 
             # close parenthesis when there's still no parenthesis in stack open
             else:
                 suggestion = suggestion[:i] + '_' + suggestion[i+1:]
+                nomatch.append([c,i])
 
+    # reverse stack_open 
+    nomatch =  nomatch + stack_open
 
     # open parenthesis left
     for c, i in stack_open:
         suggestion = suggestion[:i] + '_' + suggestion[i+1:]
     
-
     return {
         'valid': (target == suggestion),
         'original': target,
-        'suggestion': suggestion if target != suggestion else None
+        'suggestion': suggestion if target != suggestion else None,
+        'nomatch': nomatch
     }
-
-
-# test, expected
-tests = [
-    ['(AA{)d[A]())))[])aa(({)2)2]]A){[}]]]BA[A](A)}([)[]]', False],
-    ['([(CH3)2]2)2[{[NaCa]2}3[BVi3MaC4]2{(K3)3}2]2', True],
-    ['([(CH3)2]2)2[{[NaCa]2}3[BVi3MaC4]2{(K3))3}2]2', False],
-    ['((((((([A]([B](((({A2}(((((C))))[D]))))[E]))[F])))(G)))))', True],
-    ['((((}[((([A]([B]((}(({A2}(((}((C))))[D]))[))[E(]){)[F]))])(G))))[)', False]
-]
-
-for test_info in tests:
-    test, expected = test_info
-    result = validate_parenth(test)
-    print(result)
-    print('\n')
-
-# # target = '(AA{)d[A]())))[])aa(({)2)2]]A){[}]]]BA[A](A)}([)[]]'
-# target = '([(CH3)2]2)2[{[NaCa]2}3[BVi3MaC4]2{(K3)3}2]2'
-
-
 
 
 
@@ -132,22 +131,35 @@ def map_formula(target):
 
 
 
-# start_time = time.time()
 
-# target = '([(CH3)2]2)2[{[NaCa]2}3[BVi3MaC4]2{(K3)3}2]2'
+# TESTS & SPEED
 
-
-
-
-# target_simplified = simplify_formula(target)
-# print(target_simplified)
-# C8H24Na12Ca12B4Vi12Ma16K36
-
-
-# elements_map = map_formula(target)
-# print(elements_map)
-# {'C': 8, 'H': 24, 'Na': 12, 'Ca': 12, 'B': 4, 'Vi': 12, 'Ma': 16, 'K': 36}
-
-# print("--- %s seconds ---" % (time.time() - start_time))
-
-
+start_time = time.time()
+for test_data in tests:
+    
+    test, expected = test_data
+    result = validate_parenth(test)
+    valid = result['valid']
+    if valid:
+        target_simplified = simplify_formula(test)
+        elements_map = map_formula(target_simplified)
+        print('VALID\noriginal target')
+        print(test)
+        print('target simplified')
+        print(target_simplified)
+        print('elements map')
+        print(elements_map)
+        print('\n')
+    else:
+        suggestion = result['suggestion']
+        print('INVALID\noriginal target')
+        print(test)
+        print('suggestion')
+        print(suggestion)
+        print('\n')
+    
+time_diff = time.time() - start_time
+time_diff_millisec = time_diff * 1000
+print('execution time (milliseconds)')
+print(time_diff_millisec)
+print('\n')
