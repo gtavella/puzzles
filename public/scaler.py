@@ -39,6 +39,9 @@ def check_variables(data):
 
 
 
+# scale x from x range to y range
+# it answers this question: given a range from x_min to x_max that x can have, 
+# how much is x in another range y_min, y_max? This gives us y
 def get_scaled(x, x_range, y_range=(0,1), round_to=5):
     x_min, x_max = x_range
     y_min, y_max = y_range
@@ -50,7 +53,7 @@ def get_scaled(x, x_range, y_range=(0,1), round_to=5):
 
 
 # pass the variables/column names that you want to scale 
-def get_scaled_data(variables, scale_to=(0,1)):    
+def get_scaled_data(data, variables, scale_to=(0,1)):    
     data_scaled = pd.DataFrame({})
     # remember that a column is also called variable/feature
 
@@ -72,7 +75,7 @@ def get_scaled_data(variables, scale_to=(0,1)):
 check_variables(data)
 
 # scale all columns/variables 
-data_scaled = get_scaled_data( variables=list(data.columns) )
+data_scaled = get_scaled_data( data=data, variables=list(data.columns) )
 
 print(reference_scale)
 print(data)
