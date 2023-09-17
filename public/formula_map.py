@@ -118,9 +118,9 @@ def map_formula(target):
     elements_map = {}
     target_plain = simplify_formula(target)
     for match_formula in pattern_formula.finditer(target_plain):
-        element = match_formula.group(1)
+        element = match_formula['element']
         # if coeff_formula is null, set to 1
-        coeff_element = int(match_formula.group(2) or 1)
+        coeff_element = int(match_formula['coeff_element'] or 1)
         
         if element in elements_map:
             elements_map[element] += coeff_element
