@@ -1,10 +1,12 @@
 import re
-import time
 
 
-pattern_inner_parenth = re.compile(r"(\([^()[\]{}]+\))(\d*)|(\[[^[\](){}]+\])(\d*)|({[^{}()[\]]+})(\d*)")
-pattern_formula = re.compile(r"([A-Z][a-z]*)(\d*)")
-pattern_not_parenth = re.compile(r'([^()[\]{}]+)')
+
+pattern_inner_parenth = re.compile(r"(?:(?P<parenth>\([^()[\]{}]+\))|(?P<square>\[[^[\](){}]+\])|(?P<curly>{[^{}()[\]]+}))(?P<coeff>\d*)")
+
+pattern_formula = re.compile(r"(?P<element>[A-Z][a-z]*)(?P<coeff_element>\d*)")
+
+
 
 
 
@@ -89,15 +91,14 @@ def simplify_formula(target):
          return target
 
     start, end = match_inner_parenth.span()
-        # match within (), [] or {}
-    formula_parenth = match_inner_parenth.group(1) or match_inner_parenth.group(3) or match_inner_parenth.group(5)
-    # if this is null, set to 1
-    coeff_parenth = int(match_inner_parenth.group(2) or match_inner_parenth.group(4) or match_inner_parenth.group(6) or 1)
+
+    formula_parenth = match_inner_parenth['parenth'] or match_inner_parenth['square'] or match_inner_parenth['curly']
+   
+    coeff_parenth = int(match_inner_parenth['coeff'] or 1)
     
     for match_formula in pattern_formula.finditer(formula_parenth):
-        element = match_formula.group(1)
-        # if coeff_formula is null, set to 1
-        coeff_element = int(match_formula.group(2) or 1)
+        element = match_formula['element']
+        coeff_element = int(match_formula['coeff_element'] or 1)
         coeff_element_new = coeff_element * coeff_parenth
         formula_new_str = f'{element}{coeff_element_new}'
         str_formula += formula_new_str
@@ -132,9 +133,7 @@ def map_formula(target):
 
 
 
-# TESTS & SPEED
-
-start_time = time.time()
+# TESTS 
 for test_data in tests:
     
     test, expected = test_data
@@ -158,8 +157,7 @@ for test_data in tests:
         print(suggestion)
         print('\n')
     
-time_diff = time.time() - start_time
-time_diff_millisec = time_diff * 1000
-print('execution time (milliseconds)')
-print(time_diff_millisec)
-print('\n')
+
+
+
+
