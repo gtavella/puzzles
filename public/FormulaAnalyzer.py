@@ -1,4 +1,4 @@
-import re
+import re, json
 
 
 
@@ -13,8 +13,14 @@ class FormulaAnalyzer:
         self.suggestion = None
 
         self.is_valid_formula = None
+
+        self.intervals_indexes = []
         
         self.elements_map = {}
+
+        self.tree = { 'name': 'root', 'range': (0, len(self.target_original)-1 ), 'data': self.target_original, 'children': {} }
+
+        self.last_parent = self.tree
 
         self.patterns = {
             
@@ -121,11 +127,6 @@ class FormulaAnalyzer:
         # pass a simplified or non-simplified formula
     def map_elements(self):   
 
-        self.validate_intervals() 
-
-        if not self.is_valid_formula:
-            raise Exception(f'Formula is not valid. Suggestion: {self.suggestion}')
-
         self.simplify_formula()
 
         for match_formula in self.patterns['element_coeff'].finditer(self.target_simplified):
@@ -143,14 +144,177 @@ class FormulaAnalyzer:
 
 
 
+    # return sorted list of lists of interval indexes
+    def get_intervals_indexes(self):
+
+        self.intervals_indexes = []
+
+        def recurse(target_copy):
+
+            # print(target_copy)
+            match_inner_interval = re.search(self.patterns['innermost_interval'], target_copy)
+
+            if match_inner_interval is None: 
+
+                self.intervals_indexes.sort(key=lambda x: x[0])
+                return 
+
+            start, end = match_inner_interval.span()
+
+            self.intervals_indexes.append([start, end])
+
+            symbol_repeat = '_' * (end - start)
+
+            target_copy = target_copy[:start] + symbol_repeat + target_copy[end:]
+
+            recurse(target_copy)
+        
+        recurse(self.target_original[:])
+
+
+    
+    def new_id(self, start, end): return f'{start}-{end}'
+
+
+    def new_child(self, start, end, id):  return { 'name': id, 'range': (start, end), 'data': self.target_original[start:end], 'children': {} }
+
+
+
+
+    def search_children(self, last_parent, start, end):
+
+        if 'children' not in last_parent:  return
+        
+        start_last_parent, end_last_parent = last_parent['range']
+        
+        children_keys = last_parent['children'].keys()
+
+        if start > start_last_parent and end < end_last_parent:
+
+            if len(children_keys) == 0:
+
+                id_child = self.new_id(start, end)
+        
+                last_parent['children'][id_child] = self.new_child(start, end, id_child)
+
+
+            else: 
+
+                recurse = True
+
+                ranges_children_sorted = []
+
+                # you need to check them ALL before moving on
+                for child_key in children_keys:
+
+                    start_child, end_child = last_parent['children'][child_key]['range']
+
+                    ranges_children_sorted.append([start_child, end_child])
+                
+                # sort list by first number, which is the range start
+                ranges_children_sorted.sort(key=lambda x: x[0])
+
+                
+                end_last_child = start_last_parent
+                
+                for i, range_child in enumerate(ranges_children_sorted):
+
+                    start_child, end_child = range_child
+                    
+                    # check for the beginning
+                    # check in between
+                    if start > end_last_child and end < start_child:
+                        # print('found new range in the middle or start')
+                        
+                        id_child = self.new_id(start, end)
+                            
+                        last_parent['children'][id_child] = self.new_child(start, end, id_child)
+
+                        recurse = False
+                    
+                    # # check for the end, calculate again
+                    if i == len(ranges_children_sorted)-1:
+
+                        if start > end_child and end < end_last_parent:
+                            # print('found new range at the end')
+                            
+                            id_child = self.new_id(start, end)
+                            
+                            last_parent['children'][id_child] = self.new_child(start, end, id_child)
+
+                            recurse = False
+
+                    end_last_child = end_child
+                    
+
+                if recurse:
+                    # if the last parent didn't meet the conditions above, it means you need to recurse for each child
+                    for child_key in children_keys:
+
+                        child = last_parent['children'][child_key]
+
+                        self.search_children(child, start, end)
+            
+        else:
+            # STILL WORKING HERE
+            # get the last_parent
+            # get all the children with lower values than start end
+            # assign these children to a 
+        
+            print('CAUGHT unprocessed interval')
+            print('start interval', start)
+            print('end interval', end)
+            print('start last parent', start_last_parent)
+            print('end last parent', end_last_parent)
+            print('\n\n')
+
+
+            # print(start > start_last_parent and end < end_last_parent)
+
+            pass
+
+
+
+
+
+    def create_tree(self):
+           
+        for interval_indexes in self.intervals_indexes:
+
+            start, end = interval_indexes
+
+            self.search_children(self.tree, start, end)
+
+
+
+
+
+
+
+
+    
+
+
+
 
         
 
-formula = FormulaAnalyzer('([(CH3)2]2)2[{[NaCa]2}3[BVi3MaC4]2{(K3)3}2]2')
-formula.map_elements() 
+# formula = FormulaAnalyzer('([(CH3)2]2)2[{[NaCa]2}3[BVi3MaC4]2{(K3)3}2]2')
+formula = FormulaAnalyzer('((A))(B)(C((D(N(((H))(P))))(F)))')
 
-print(formula.target_simplified)
-print(formula.elements_map)
+formula.validate_intervals()
+if not formula.is_valid_formula:
+    raise Exception(f'Formula is not valid. Suggestion: {formula.suggestion}')
+
+formula.map_elements() 
+formula.get_intervals_indexes()
+print(formula.intervals_indexes)
+
+formula.create_tree()
+
+# print(formula.target_simplified)
+# print(formula.elements_map)
+print(json.dumps(formula.tree))
 
 
 
