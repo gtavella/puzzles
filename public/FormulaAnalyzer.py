@@ -18,7 +18,7 @@ class FormulaAnalyzer:
         
         self.elements_map = {}
 
-        self.tree = { 'name': 'root', 'range': (0, len(self.target_original)-1 ), 'data': self.target_original, 'children': {} }
+        self.tree = { 'name': 'root', 'range': (0, len(self.target_original) ), 'data': self.target_original, 'children': {} }
 
         self.last_parent = self.tree
 
@@ -156,7 +156,10 @@ class FormulaAnalyzer:
 
             if match_inner_interval is None: 
 
+                # print('DONE with intervals')
+
                 self.intervals_indexes.sort(key=lambda x: x[0])
+
                 return 
 
             start, end = match_inner_interval.span()
@@ -189,7 +192,7 @@ class FormulaAnalyzer:
         
         children_keys = last_parent['children'].keys()
 
-        if start > start_last_parent and end < end_last_parent:
+        if start >= start_last_parent and end <= end_last_parent:
 
             if len(children_keys) == 0:
 
@@ -223,7 +226,7 @@ class FormulaAnalyzer:
                     
                     # check for the beginning
                     # check in between
-                    if start > end_last_child and end < start_child:
+                    if start >= end_last_child and end <= start_child:
                         # print('found new range in the middle or start')
                         
                         id_child = self.new_id(start, end)
@@ -235,7 +238,7 @@ class FormulaAnalyzer:
                     # # check for the end, calculate again
                     if i == len(ranges_children_sorted)-1:
 
-                        if start > end_child and end < end_last_parent:
+                        if start >= end_child and end <= end_last_parent:
                             # print('found new range at the end')
                             
                             id_child = self.new_id(start, end)
@@ -261,12 +264,15 @@ class FormulaAnalyzer:
             # get all the children with lower values than start end
             # assign these children to a 
         
-            print('CAUGHT unprocessed interval')
-            print('start interval', start)
-            print('end interval', end)
-            print('start last parent', start_last_parent)
-            print('end last parent', end_last_parent)
-            print('\n\n')
+            # print('CAUGHT unprocessed interval')
+            # print('start interval', start)
+            # print('end interval', end)
+            # print(self.target_original[start:end])
+            # print(self.tree)
+
+            # print('start last parent', start_last_parent)
+            # print('end last parent', end_last_parent)
+            # print('\n\n')
 
 
             # print(start > start_last_parent and end < end_last_parent)
@@ -300,21 +306,25 @@ class FormulaAnalyzer:
         
 
 # formula = FormulaAnalyzer('([(CH3)2]2)2[{[NaCa]2}3[BVi3MaC4]2{(K3)3}2]2')
-formula = FormulaAnalyzer('((A))(B)(C((D(N(((H))(P))))(F)))')
+# formula = FormulaAnalyzer('((A))(B)(C((D(N(((H))(P))))(F)))')
+# formula = FormulaAnalyzer('(X(Y(G))(W))(D(B((B)(U)))[H[G]])(C[A[B[C[T][R(I[P])]][E([A][B])]S]])((P)((((B)(N)))))')
+# formula = FormulaAnalyzer('(([B]([T])))[(V)(S)[[{A}{[A](A)}]((([A])))[K]]][B]')
 
-formula.validate_intervals()
-if not formula.is_valid_formula:
-    raise Exception(f'Formula is not valid. Suggestion: {formula.suggestion}')
+# formula.validate_intervals()
+# if not formula.is_valid_formula:
+#     raise Exception(f'Formula is not valid. Suggestion: {formula.suggestion}')
 
-formula.map_elements() 
-formula.get_intervals_indexes()
-print(formula.intervals_indexes)
+# formula.map_elements() 
+# formula.get_intervals_indexes()
+# # print(formula.intervals_indexes)
+# # for interval_indexes in formula.intervals_indexes:
+# #     start, end = interval_indexes
+# #     print(formula.target_original[start:end])  
 
-formula.create_tree()
 
-# print(formula.target_simplified)
-# print(formula.elements_map)
-print(json.dumps(formula.tree))
+
+# formula.create_tree()
+# print(json.dumps(formula.tree))
 
 
 
