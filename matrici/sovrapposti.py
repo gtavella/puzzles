@@ -40,7 +40,8 @@ M=[
 
 # significa: verifica se le colonne con indice 1 e 2 hanno sovrapposti
 print(matrice_ha_sovrapposti(M,1,2))
-# ritorna una matrice composta da queste righe
+# ritorna False, perche' non esiste nessun valore sovrapposto nelle due colonne
+# infatti la nuovo matrice ordinata e' composta da queste righe
 # [2, 11, 30]
 # [0, 31, 90]
 # [0, 91, 120]
