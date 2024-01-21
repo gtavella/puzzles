@@ -1,18 +1,21 @@
 
+# Ottieni una sottomatrice da una generica matrice, partendo dalla posizione (i,j), con ampiezza k.
+# in input si assume una matrice ben formata le cui colonne sono della stessa lunghezza
 
-# ix: row index to start from
-# jx: column index to start from
-# k: distance/step
-def submatrix(M,ix,jx,k):
+# ix: indice di riga da cui partire
+# jx: indice di colonna da cui partire
+# k: ampiezza/distanza/passo
+def sottomatrice(M,ix,jx,k):
     ret=[]
 
+    # casi generali
     start_row=ix-k
     end_row=ix+k
     start_col=jx-k
     end_col=jx+k
 
-    # always start from real beginning end real end
-    # assuming a matrix with same-length columns
+    # casi limite
+    # parti sempre da un vero inizio e una vera fine
     if start_row<0:
         start_row=0
     if end_row>=len(M):
@@ -32,7 +35,6 @@ def submatrix(M,ix,jx,k):
 
 
 
-
 M=[
    [0,    1,   2,   3,   4],
    [5,    6,   7,   8,   9],
@@ -40,4 +42,9 @@ M=[
    [15,  16,  17,  18,  19],
    [20,  21,  22,  23,  24]
 ]
-print(submatrix(M,1,0,2))
+
+# significa: ottieni una sottomatrice di ampiezza 1, con al centro l'elemento in posizione (2,2)
+print(sottomatrice(M,2,2,1))
+# output: [[6,  7,   8],
+#          [11, 12, 13],
+#          [16, 17, 18]]
