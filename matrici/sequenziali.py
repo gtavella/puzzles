@@ -1,13 +1,13 @@
 
-# la lista L2 e' sequenziale con L1
+# Verifica che i valori nella lista L1 e i valori nella lista L2, quando ordinati secondo i valori di L1,
+# questo produce un ordinamento corretto in L2.
 # ritorna L1 e L2 ordinati in senso crescente
-# ovvero, ordinando la lista L1, si ottieni un ordinamento corretto anche in L2?
 # esempio (sono sequenziali):
 """
     L1: [2  1  6  3]
          |  |  |  |
     L2: [20 10 60 30]
-    perche', quando ordinati in base a L1, mantengono l'ordinamento corretto:
+    perche', quando ordinati in base a L1, gli elementi in L2 mantengono l'ordinamento corretto nello stesso senso:
     L1: [1  2  3  6]
          |  |  |  |
     L2: [10 20 30 60]
@@ -15,7 +15,7 @@ esempio (non sono sequenziali):
     L1: [2  1  6  3]
          |  |  |  |
     L2: [10 20 60 30]
-    perche', quando ordinati in base a L1, non mantengono l'ordinamento corretto:
+    perche', quando ordinati in base a L1, gli elementi in L2 non mantengono l'ordinamento corretto nello stesso senso:
     L1: [1  2  3  6]
          |  |  |  |
     L2: [20 10 30 60]
@@ -38,11 +38,13 @@ def sono_sequenziali(L1,L2):
 
 
 
-
-# L1=[2,1,4]
-# L2=[100,80,110]
 L1= [6, 7, 1, 2, 8, 9, 3, 4, 5]
 L2= [60,70,10,20,80,90,30,40,50]
+# significa: gli elementi in L1, se ordinati, producono un ordinamento corretto anche in L2? 
 print(sono_sequenziali(L1,L2))
+# output: True, perche' gli elementi nella lista L1, quando ordinati, producono un ordinamento corretto anche in L2
 print(L1,L2)
+# output: [1,  2,  3,  4,  5,  6,  7,  8,  9]
+#         [10, 20, 30, 40, 50, 60, 70, 80, 90]
+
 
