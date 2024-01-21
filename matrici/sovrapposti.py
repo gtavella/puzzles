@@ -1,3 +1,4 @@
+
 # Verifica se 2 specifiche colonne di una matrice ha elementi sovrapposti
 # utile per verificare che date e giorni non siano sovrapposti,
 # o in generale che qualsiasi valore numerico puo' o non puo' avere valori compresi tra valori gia' esistenti
@@ -25,14 +26,14 @@ def matrice_ha_sovrapposti(M,jx1,jx2):
 
 
 M=[
-    [0, 31, 90],
+    [0, 31,  90],
     [1, 121, 215],
-    [2, 11, 30],
+    [2, 11,  30],
     [0, 216, 250],
     [3, 301, 350],
     [3, 361, 370],
     [0, 351, 360],
-    [0, 91, 120],
+    [0, 91,  120],
     [3, 401, 420],
     [2, 431, 450],
     [0, 421, 430]
