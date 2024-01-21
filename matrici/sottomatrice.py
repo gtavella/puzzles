@@ -1,5 +1,4 @@
-
-# Ottieni una sottomatrice da una generica matrice, partendo dalla posizione (i,j), con ampiezza k.
+# Ottieni una sottomatrice di ampiezza k da una generica matrice, partendo dalla posizione (i,j).
 # in input si assume una matrice ben formata le cui colonne sono della stessa lunghezza
 
 # ix: indice di riga da cui partire
