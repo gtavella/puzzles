@@ -353,5 +353,90 @@ def move_left_insert_end(L,L_new):
 
 
 
+def create_matrix(n,m,v,header=False):
+    ret = []
+    for i in range(n):
+        row = [v] * m
+        ret.append(row)
+    if header:
+        ret[0]=header
+    return ret
+
+
+def create_zero_matrix(n,m,header=False):
+    return create_matrix(n,m,0,header)
+
+
+
+
+# Given a generic matrix, returns a new scaled matrix with the values of each column scaled
+# according to the min and max values given in the reference scale.
+def scale_matrix(M,ref_scale,target_range):
+
+    # create a copy of the given matrix
+    M_c=create_zero_matrix(len(M),len(M[0]),M[0])
+    # the first column is header
+    col_names = M[0]
+    # for each column, find the min and max based linked to that column name
+    # iterate for each column
+    for j in range(len(M[0])):
+        # the specific column name
+        col_name = col_names[j]
+        # min and max values for that column
+        min_val, max_val = ref_scale[col_name]
+
+        # iterate for each element of each column except the first row
+        for i in range(1, len(M)):
+            # set each column element to be its scaled
+            M_c[i][j] = get_scaled(M[i][j], (min_val, max_val), target_range, 3)
+
+    return M_c
+
+
+# scale value x from x range (starting range) to y range (desired range)
+# it answers this question: given a range from x_min to x_max that x can have,
+# how much is x in another range y_min, y_max? This gives us y
+def get_scaled(x,x_range,y_range=(0,1), round_to=5):
+    x_min, x_max = x_range
+    y_min, y_max = y_range
+    x_coeff = (x_max - x_min) / (y_max - y_min)
+    y_diff = (x - x_min) / x_coeff
+    y = y_min + y_diff
+    return round(y, round_to)
+
+
+
+# M = [
+#     ['a', 'b', 'c', 'd'],
+#     [1, 10, 30, 23],
+#     [2, 23, 50, 10],
+#     [10, 41, 36, 24],
+#     [5, 50, 10, 90],
+#     [8, 3, 5, 91]
+# ]
+# 
+# # column name, min value, max value
+# ref_scale = {
+#     'a': [0, 10],
+#     'b': [20, 60],
+#     'c': [10, 100],
+#     'd': [20, 90],
+# }
+
+# M_res=scale_matrix(M, ref_scale, (0, 1))
+# for row in M_res:
+#     print(row)
+# print()
+# for row in M:
+#     print(row)
+# ['a', 'b', 'c', 'd']
+# [0.1, -0.25, 0.222, 0.043]
+# [0.2, 0.075, 0.444, -0.143]
+# [1.0, 0.525, 0.289, 0.057]
+# [0.5, 0.75, 0.0, 1.0]
+# [0.8, -0.425, -0.056, 1.014]
+
+
+
 
 
