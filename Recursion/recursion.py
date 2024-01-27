@@ -1,3 +1,4 @@
+
 # Given a list, write a program to get adjacent sublists of k length using recursion.
 def get_sublists(L,k,res):
     if len(L)<=k:
@@ -61,3 +62,61 @@ def order_list(L,last_i):
 # print('initial list', L)
 # order_list(L,0)
 # print('final list',L)
+
+
+
+# Write a program that checks if a number is smaller than any number in a given list, using recursion.
+def smaller(x,L):
+    # an element is always smaller or greater than all elements of an empty list, that is no element
+    if len(L)==0:
+        return True
+    # the current element does not verify the condition at least once, return False
+    if x>=L[0]:
+        return False
+    # keep on recursing with the next elements
+    # the code that comes before the recursive call is to be considered like the body of a loop
+    # likewise, if I keep recursing and I never return, it means the initial condition has been met
+    smaller(x,L[1:])
+    # in fact, if you haven't returned before, it means the element verifies the condition
+    return True
+
+# L=[4,7,5,8,7,9]
+# x=3
+# print(smaller(x,L))
+
+
+
+
+# Reverse a string using recursion.
+def reverse_string(s,res):
+    if len(s)==0:
+        return res
+    res+=s[-1]
+    return reverse_string(s[:-1],res)
+
+
+# print(reverse_string('hello',''))
+
+
+# Add numbers of a list using recursion.
+def add_numbers(L,s):
+    if len(L)==0:
+        return s
+    s+=L[0]
+    return add_numbers(L[1:],s)
+
+# L=[2,5,2,3,6,1]
+# print(add_numbers(L,0))
+
+
+# Calculate the power of a number using recursion.
+
+def compute_power(base,exp,res):
+    if exp==1:
+        return res
+    res=res*base
+    return compute_power(base,exp-1,res)
+
+# base=2
+# exp=5
+# print(compute_power(base,exp,base))
