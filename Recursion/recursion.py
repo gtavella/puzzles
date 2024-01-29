@@ -1,4 +1,3 @@
-
 # Given a list, write a program to get adjacent sublists of k length using recursion.
 def get_sublists(L,k,res):
     if len(L)<=k:
@@ -120,3 +119,45 @@ def compute_power(base,exp,res):
 # base=2
 # exp=5
 # print(compute_power(base,exp,base))
+
+
+
+# Sum all nonnegative numbers up to n.
+def sum_until1(n,s):
+    if n==0:
+        return s
+    return sum_until1(n-1,s+n)
+
+# print(sum_until1(5,0))
+
+
+def sum_until2(n):
+    if n==0:
+        return 0
+    return n+sum_until2(n-1)
+
+# print(sum_until2(5))
+
+
+
+# Compute the whole division of an integer x divided by d which returns the total quotient q
+# Equivalent to // operator
+def whole_division(x,d,q):
+    # if x-d returns a negative number, it means we've finished counting the quotient
+    if x-d<0:
+        return q
+    # else decrease x by d
+    return whole_division(x-d,d,q+1)
+
+
+# print(whole_division(16,2,0))
+
+
+# Get remainder of a division
+# Equivalent to % operator
+def mod_division(x,d):
+    if x-d<0:
+        return x
+    return mod_division(x-d,d)
+
+# print(mod_division(35,7))
