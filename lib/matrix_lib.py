@@ -439,4 +439,36 @@ def get_scaled(x,x_range,y_range=(0,1), round_to=5):
 
 
 
+# Sort a list with a given amount of swaps and check if it's sorted
+def sort_n_swaps(L,max_swaps):
+    n_swaps=0
+    i=0
+
+    while i<len(L)-1 and n_swaps<max_swaps:
+
+        right_sublist=L[i:]
+        smallest=min(right_sublist)
+        i_smallest=i+right_sublist.index(smallest)
+
+        if i!=i_smallest:
+            n_swaps+=1
+            swap(L,i,i_smallest)
+        i+=1
+
+    return is_ascending(L)
+
+
+def is_ascending(L):
+    for i in range(1,len(L)):
+        if L[i]<L[i-1]:
+            return False
+    return True
+
+
+
+# L = [1, 2, 10, 6, 9, 4, 12]
+# print(sort_n_swaps(L,1))
+
+
+
 
