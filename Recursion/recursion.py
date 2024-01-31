@@ -1,3 +1,5 @@
+
+
 # Given a list, write a program to get adjacent sublists of k length using recursion.
 def get_sublists(L,k,res):
     if len(L)<=k:
@@ -63,6 +65,24 @@ def order_list(L,last_i):
 # print('final list',L)
 
 
+def fib1(n):
+    if n<=1:
+        return n
+    return fib1(n-1)+fib1(n-2)
+
+def fib2(n):
+    a=0
+    b=1
+    for i in range(n):
+        # print(a)
+        c=a+b
+        a=b
+        b=c
+
+
+
+# print(fib2(10))
+
 
 # Write a program that checks if a number is smaller than any number in a given list, using recursion.
 def smaller(x,L):
@@ -82,6 +102,15 @@ def smaller(x,L):
 # L=[4,7,5,8,7,9]
 # x=3
 # print(smaller(x,L))
+
+
+def greater(x,L):
+    if len(L)==0:
+        return True
+    if x<=L[0]:
+        return False
+    greater(x,L[1:])
+    return True
 
 
 
@@ -160,4 +189,75 @@ def mod_division(x,d):
         return x
     return mod_division(x-d,d)
 
-# print(mod_division(35,7))
+
+
+
+def find_max(L):
+    first = L[0]
+    if len(L) == 1:
+        return first
+    second = find_max(L[1:])
+    if first > second:
+        return first
+    return second
+
+# L = [5, 10, 361, 90, 7]
+# print(find_max(L))
+
+
+
+
+
+
+# Write a program that checks if a list is in ascending order - using recursion.
+# Get first element (current)
+# Get second element (next) (which is first in next recursive call)
+# if current element >= next element, return False
+# else return
+
+
+
+def check_ascending1(L):
+    n=len(L)
+    # a list with no elements or one element is always sorted
+    if n==0 or n==1:
+        return True
+    curr=L[0]
+    next=L[1]
+    # if list has only two elements
+    # if list has more than 2 elements
+    return curr<next and check_ascending1(L[1:])
+
+
+# L=[1,2,3,4,5,6,7]
+# print(check_ascending1(L))
+
+
+
+
+# A list is said to be sorted in ascending order if and only if,
+# chosen a random pivot in the list, every element to its left is less than the pivot,
+# and every element to the right of the pivot is greater than the pivot.
+# Base case: If the sublist is made of two elements
+# A list is in ascending order if and only if the current element is smaller than the next.
+
+# I choose the pivot with the index = middle
+# Using partition algorithm
+def check_ascending2(L):
+    n=len(L)
+    if n==0:
+        return True
+    mid=n//2
+    pivot=L[mid]
+    left=L[:mid]
+    right=L[mid+1:]
+    are_sorted=greater(pivot,left) and smaller(pivot,right)
+    if are_sorted:
+        return check_ascending2(left) and check_ascending2(right)
+    return False
+
+# L=[1,2,3,4,5,6,7,10,16,30]
+# print(check_ascending2(L))
+
+
+
