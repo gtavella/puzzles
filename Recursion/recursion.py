@@ -261,3 +261,22 @@ def check_ascending2(L):
 
 
 
+#  Write a Python program to sum recursion lists using recursion.
+def sum_recurse(L,s):
+    # if L is not a list, then it's a number
+    if not isinstance(L,list):
+        return s+L
+    # if L is a list
+    # if the length of the list is 0, it means there are no elements and the sum is whatever is the current sum (because s+0=s)
+    if len(L)==0:
+        return s
+    # recurse on first element
+    s2=sum_recurse(L[0],s)
+    # recurse on remaining elements passing the sum of the recursive calls to the first element
+    return sum_recurse(L[1:],s2)
+
+
+# LL=[1, 2, [3,[2,[4]],4], [5,6],[[2,[1]]]]
+# print(sum_recurse(LL,0))
+
+
