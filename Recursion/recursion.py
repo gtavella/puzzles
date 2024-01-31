@@ -270,13 +270,12 @@ def sum_recurse(L,s):
     # if the length of the list is 0, it means there are no elements and the sum is whatever is the current sum (because s+0=s)
     if len(L)==0:
         return s
-    # recurse on first element
-    s2=sum_recurse(L[0],s)
-    # recurse on remaining elements passing the sum of the recursive calls to the first element
-    return sum_recurse(L[1:],s2)
+    # recurse on first element, the recursive sum of the first element will be added to s
+    s1=sum_recurse(L[0],s)
+    # recurse on all other elements, the recursive sum of all the other elements will be added to the recursive sum of the first element
+    return sum_recurse(L[1:],s1)
 
 
 # LL=[1, 2, [3,[2,[4]],4], [5,6],[[2,[1]]]]
 # print(sum_recurse(LL,0))
-
 
