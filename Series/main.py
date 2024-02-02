@@ -9,18 +9,23 @@ import math
 # i: mobile index
 # generic sequence term
 def sequenceA(start,end):
-    return lambda i: 10+(1/i**2)
+    return lambda i: 1/(i**2)
 
 
 def sequenceB(start,end):
-    return lambda i: (start+i)/(i**2)
+    return lambda i: (1/2)**i
 
 
 def sequenceC(start,end):
-    return lambda i: (1/2)**i
+    return lambda i: math.log(i,math.e)/(i**2)
 
 def sequenceD(start,end):
-    return lambda i: math.log(i,math.e)/(i**2)
+    return lambda i: (i**2)/(math.e**i)
+
+def sequenceE(start,end):
+    return lambda i: i
+
+
 
 
 # compute sum from start to end of any series
@@ -28,9 +33,9 @@ def sequenceD(start,end):
 # This implementation minimizes the number of arguments passed in recursive calls.
 # Because we pre-compute the sequence function with the start and end values, for each recursive call you effectively use
 # only the arguments (and thus memory) you need, because only the mobile index i needs to be updated
-def series_sum(start,end,sequence_target,s,sequence_values,series_values):
+def series_sum(start,end,sequence_target,s,interval,sequence_values,series_values):
     # negative numbers not allowed, only non negative integers (>=0)
-    if start<0:
+    if start<0 or isinstance(start,float) or isinstance(end,float):
         raise Exception('Domain must be x>=0, x natural.')
     # pre-compute sequence function and returns another function where you'll have to pass only the mobile index i to it
     # because the start and end values of the series, as well as the sequence function will always be the same at each point
@@ -42,6 +47,7 @@ def series_sum(start,end,sequence_target,s,sequence_values,series_values):
     def compute_sum(i):
         # if the mobile index has reached the end
         # simply compute the current term of the sequence
+        interval.append(i)
         y_sequence=sequence(i)
         # add current sequence and series values
         sequence_values.append(y_sequence)
@@ -65,43 +71,81 @@ def series_sum(start,end,sequence_target,s,sequence_values,series_values):
 # for example: cannot divide by 0, logarithm argument must be >0, argument of even root must be >=0, etc.
 # I use a list because a list gets passed by reference, whereas if I were to pass an integer, it would be pased by value/copy
 # instead of initializing an integer sum to 0, for example s=0, I initialize a list with one element s=[0]
-s=[0]
-sequence_values=[]
-series_values=[]
-series_sum(1,
-             100,
-             sequenceA,
-             s,
-             sequence_values,
-             series_values)
 
-print('Sum of series:')
-print(s[0])
-print()
-print('Sequence values:')
-print(sequence_values)
-print()
-print('Series values:')
-print(series_values)
+
 
 
 
 # Model the concept of "after a certain point, the function is decreasing"
-def is_definitely_decreasing(L):
-    i=len(L)-1
-    while i>=1:
-        curr=L[i]
-        prev=L[i-1]
-        if prev<=curr:
-            return False
+def definitely_decreasing(sequence_values,start,interval,series_info):
+    i=len(sequence_values)-1
+    found=False
+
+    while i>=1 and not found:
+        y=sequence_values[i]
+        y_prev=sequence_values[i-1]
+        # if the previous value is less than or equal the current one, it means function is increasing
+        # so starting from the end, we stop at the very last point such that from that point onward,
+        # the function always decreases
+        if y_prev<=y:
+            # we want to get the corresponding x from the interval
+            # even through i is actually x, since we start from the length of the list-1, it's best to
+            # actually get the x from the interval, it makes more semantic sense
+            series_info['decreases_from']=[interval[i], y]
+            found=True
         i-=1
-    return True
+
+    # if you've never found a minimum, what does it mean? That the minimum is the very first (x,y)
+    if not found:
+        # if function doesn't return before, it means the value sought after is the very first one
+        series_info['decreases_from']=[start,sequence_values[0]]
 
 
 
 
-res=is_definitely_decreasing(sequence_values)
-print(res)
+
+
+def save_to_csv(file_name,interval,sequence_values,series_values):
+    with open(f'{file_name}.csv', 'w') as file:
+        file.writelines("i,sequence,series\n")
+        for i in range(len(sequence_values)):
+            file.writelines(f'{interval[i]},{sequence_values[i]},{series_values[i]}\n')
+
+
+
+
+def main():
+    start=1
+    end=100
+    s = [0]
+
+    interval=[]
+    sequence_values = []
+    series_values = []
+    series_info={
+        'decreases_from': [0,0], # [x,y]
+    }
+    file_name='series_output'
+
+
+    series_sum(start,
+               end,
+               sequenceE,
+               s,
+               interval,
+               sequence_values,
+               series_values)
+
+    definitely_decreasing(sequence_values,start,interval,series_info)
+
+    print(series_info)
+    print('sum:',s[0])
+
+    save_to_csv(file_name,interval,sequence_values,series_values)
+
+
+main()
+
 
 
 
